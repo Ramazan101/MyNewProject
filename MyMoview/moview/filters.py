@@ -4,11 +4,12 @@ from django_filters import filterset
 class MovieFilter(filterset.FilterSet):
     class Meta:
         model = Movie
-        fields = {
-            'country' : ['exact'],
-            'director' : ['exact'],
-            'actor' : ['exact'],
-            'year' : ['gt','lt'],
-            'genre' : ['exact'],
-            'status_movie' : ['exact'],
+        fields =  {
+            'country': ['exact'],
+            'year': ['gt', 'lt'],
+            'director': ['exact'],
+            'actor': ['exact'],
+            'genre': ['exact'],
+            'status_movie': ['exact'],
+
         }

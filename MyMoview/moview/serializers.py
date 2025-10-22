@@ -1,3 +1,4 @@
+
 from .models import (Profile, Country, Director, Actor, Genre, Movie,
                     MovieLanguages, Moments, Rating, Favorite, FavoriteMovie, History)
 from rest_framework import serializers
@@ -47,38 +48,131 @@ class ProfileSerializer(serializers.ModelSerializer):
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = '__all__'
+        fields = ['id','country_name']
+
+class CountryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ['id','country_name']
+
+
 
 class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Director
-        fields = '__all__'
+        fields = ['id','director_name']
+
+class DirectorListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Director
+        fields = ['id','director_name']
+
+
+
+
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
-        fields = '__all__'
+        fields = ['id','actor_name']
+
+
+class ActorListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Actor
+        fields = ['id','actor_name']
+
+
 
 class GenreSerializers(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = ['id','Gere_name']
 
-class MovieSerializer(serializers.ModelSerializer):
+class GenreListSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ['id','Gere_name']
+
+
+class MovieListSerializer(serializers.ModelSerializer):
+    year = serializers.DateField(format='%Y')
+    country = CountrySerializer(many=True)
+    genre = GenreSerializers(many=True)
+
+
     class Meta:
         model = Movie
-        fields = '__all__'
+        fields = ['id', 'movie_name','year','country','genre','status_movie']
+
+class DirectorDetailSerializer(serializers.ModelSerializer):
+    director_movie = MovieListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Director
+        fields = ['bio','director_name','director_image','age','director_movie']
+
+
+class ActorDetailSerializer(serializers.ModelSerializer):
+    actor_movie = MovieListSerializer(many=True, read_only=True)
+
+
+    class Meta:
+        model = Actor
+        fields = ['actor_image','actor_name','age','bio','actor_movie']
+
+
+class GenreDetailSerializers(serializers.ModelSerializer):
+    genre_movie = MovieListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Genre
+        fields = ['Gere_name']
+
+
+class CountryDetailSerializer(serializers.ModelSerializer):
+    country_name = MovieListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Country
+        fields = ['country_name']
 
 class MovieLanguagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MovieLanguages
-        fields = '__all__'
-
+        fields = ['id','movie_languages','video']
 
 class MomentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moments
-        fields = '__all__'
+        fields = ['movie_moments']
+
+
+class MovieDetailSerializer(serializers.ModelSerializer):
+    year = serializers.DateField(format=('%d-%m-%Y'))
+    country = CountrySerializer(many=True)
+    director = DirectorSerializer(many=True)
+    actor = ActorSerializer(many=True)
+    genre = GenreSerializers(many=True)
+    videos = MovieLanguagesSerializer(many=True, read_only=True)
+    moments = MomentsSerializer(many=True, read_only=True)
+    get_avg_rating = serializers.SerializerMethodField()
+    get_count_people = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = Movie
+        fields = ['movie_name','year','country','genre',
+                  'director','actor','data_type','description',
+                  'movie_time','movie_trailer','movie_image','status_movie','videos','moments',
+                  'ratings','get_avg_rating','get_count_people']
+
+    def get_avg_rating(self, obj):
+        return obj.get_avg_rating()
+
+    def get_count_people(self, obj):
+        return obj.get_count_people()
+
 
 
 class RatingSerializer(serializers.ModelSerializer):

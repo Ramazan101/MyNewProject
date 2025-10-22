@@ -5,12 +5,16 @@ from .filters import MovieFilter
 from .models import (Profile, Country, Director, Actor, Genre, Movie,
                     MovieLanguages, Moments, Rating, Favorite, FavoriteMovie, History)
 
-from .serializers import (ProfileSerializer, CountrySerializer,DirectorSerializer,ActorSerializer,
-                        GenreSerializers, MovieSerializer, MovieLanguagesSerializer, MomentsSerializer, RatingSerializer,
-                        FavoriteMovieSerializer, FavoriteSerializer, HistorySerializer, UserSerializer, LoginSerializer)
+from .serializers import (ProfileSerializer,DirectorListSerializer,ActorListSerializer,
+                        ActorDetailSerializer,
+                        GenreListSerializers,GenreDetailSerializers, MovieListSerializer,MovieDetailSerializer,
+                        MovieLanguagesSerializer, MomentsSerializer, RatingSerializer,CountryListSerializer, CountryDetailSerializer,
+                        FavoriteMovieSerializer, FavoriteSerializer, HistorySerializer, UserSerializer, LoginSerializer,
+                        DirectorDetailSerializer)
 from rest_framework import viewsets, permissions, generics, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
+from .permissions import CheckStatus
 
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -54,26 +58,42 @@ class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
 
 
-class CountryViewSet(viewsets.ModelViewSet):
+class CountryListAPView(generics.ListAPIView):
     queryset = Country.objects.all()
-    serializer_class = CountrySerializer
+    serializer_class = CountryListSerializer
 
-class DirectorViewSet(viewsets.ModelViewSet):
+class CountryDetailAPView(generics.RetrieveAPIView):
+    queryset = Country.objects.all()
+    serializer_class = CountryDetailSerializer
+
+
+class DirectorListAPIView(generics.ListAPIView):
     queryset = Director.objects.all()
-    serializer_class = DirectorSerializer
+    serializer_class = DirectorListSerializer
 
-class ActorViewSet(viewsets.ModelViewSet):
+class DirectorDetailAPIView(generics.RetrieveAPIView):
+    queryset = Director.objects.all()
+    serializer_class = DirectorDetailSerializer
+
+class ActorListAPView(generics.ListAPIView):
     queryset = Actor.objects.all()
-    serializer_class = ActorSerializer
+    serializer_class = ActorListSerializer
 
-class GenreViewSet(viewsets.ModelViewSet):
+class ActorDetailAPIView(generics.RetrieveAPIView):
+    queryset = Actor.objects.all()
+    serializer_class = ActorDetailSerializer
+
+class GenreListAPView(generics.ListAPIView):
     queryset = Genre.objects.all()
-    serializer_class = GenreSerializers
+    serializer_class = GenreListSerializers
 
-class MovieSetViewSet(viewsets.ModelViewSet):
+class GenreDetailAPIView(generics.RetrieveAPIView):
+    queryset = Genre.objects.all()
+    serializer_class = GenreDetailSerializers
+
+class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = MovieListSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = MovieFilter
     search_fields = ['movie_name']
@@ -81,17 +101,18 @@ class MovieSetViewSet(viewsets.ModelViewSet):
 
 
 
-class MovieLanguagesViewSet(viewsets.ModelViewSet):
-    queryset = MovieLanguages.objects.all()
-    serializer_class = MovieLanguagesSerializer
+class MovieDetailView (generics.RetrieveAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieDetailSerializer
+    permission_classes = [CheckStatus]
 
-class MomentsViewSet(viewsets.ModelViewSet):
-    queryset = Moments.objects.all()
-    serializer_class = MomentsSerializer
+
+
 
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class FavoriteViewSet(viewsets.ModelViewSet):
     queryset = Favorite.objects.all()
