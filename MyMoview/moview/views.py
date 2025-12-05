@@ -101,7 +101,7 @@ class MovieListView(generics.ListAPIView):
 
 
 
-class MovieDetailView (generics.RetrieveAPIView):
+class MovieDetailView(generics.RetrieveAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieDetailSerializer
     permission_classes = [CheckStatus]

@@ -11,5 +11,4 @@ class MovieFilter(filterset.FilterSet):
             'actor': ['exact'],
             'genre': ['exact'],
             'status_movie': ['exact'],
-
         }

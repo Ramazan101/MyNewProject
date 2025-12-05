@@ -175,6 +175,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
 
 
 
+
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
